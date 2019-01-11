@@ -2,9 +2,23 @@
 
 namespace SsMailer\Model\Send;
 
+use SsMailer\Model\EmailInterface;
+use DateTimeInterface;
+
 interface RequestInterface
 {
-    public function hasErrors(): bool;
-    public function getErrors(): array;
-    public function getEmailRequest(): EmailRequestInterface;
+    /**
+     * @return bool
+     */
+    public function isDelayed(): bool;
+
+    /**
+     * @return DateTimeInterface
+     */
+    public function getSendDateTime(): DateTimeInterface;
+
+    /**
+     * @return EmailInterface
+     */
+    public function getEmail(): EmailInterface;
 }

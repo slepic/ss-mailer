@@ -2,11 +2,9 @@
 
 namespace SsMailer\Model\Send;
 
-interface ResponseInterface
+use SsMailer\Model\ErroneousInterface;
+
+interface ResponseInterface extends ErroneousInterface
 {
-    public function getStatus(): bool;
-
     public function getMessageId(): ?string;
-
-    public function getErrors(): array;
 }
