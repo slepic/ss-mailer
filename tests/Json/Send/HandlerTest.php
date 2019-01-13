@@ -4,27 +4,20 @@ namespace SsMailer\Tests\Json\Send;
 
 use PHPUnit\Framework\TestCase;
 use SsMailer\Json\Send\Handler;
+use SsMailer\Json\Send\RequestFactoryInterface as RequestFactory;
 use SsMailer\Json\Send\ResponseFactoryInterface as ResponseFactory;
-use SsMailer\Json\Send\RequestReaderFactoryInterface as ReaderFactory;
-use SsMailer\Model\Send\RequestReaderInterface as RequestReader;
 use SsMailer\Model\Send\SenderInterface as Sender;
-use SsMailer\Model\Send\RequestInterface as EmailRequest;
-use SsMailer\Model\Send\ResponseInterface as Response;
+use SsMailer\Model\Send\RequestInterface as Request;
 use stdClass;
 
 class HandlerTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->emailRequest = $this->createMock(EmailRequest::class);
-        $this->reader = $this->createMock(RequestReader::class);
-        $this->reader->method('getRequest')
-            ->willReturn($this->emailRequest);
-        $this->response = $this->createMock(Response::class);
-        $this->readerFactory = $this->createMock(ReaderFactory::class);
-        $this->responseFactory = $this->createMock(ResponseFactory::class);
+        $this->requestFactory = $this->createMock(RequestFactory::class);
         $this->sender = $this->createMock(Sender::class);
-        $this->handler = new Handler($this->readerFactory, $this->responseFactory, $this->sender);
+        $this->responseFactory = $this->createMock(ResponseFactory::class);
+        $this->handler = new Handler($this->requestFactory, $this->responseFactory, $this->sender);
     }
 
     public function provideHandleBadInputData(): array
@@ -39,20 +32,15 @@ class HandlerTest extends TestCase
      */
     public function testHandleBadInput($inputJson, $errors)
     {
-        $this->readerFactory->method('createRequestReader')
+        $this->requestFactory->method('createRequest')
             ->with($inputJson)
-            ->willReturn($this->reader);
-
-        $this->reader->method('hasErrors')
-            ->willReturn(true);
-        $this->reader->method('getErrors')
             ->willReturn($errors);
 
         $response = new stdClass();
-        $this->responseFactory->method('createErrorResponse')
+        $this->responseFactory->method('createInputErrorResponse')
             ->with($errors)
             ->willReturn($response);
-
+    
         $outputJson = $this->handler->handle($inputJson);
         $this->assertSame($response, $outputJson);
     }
@@ -67,26 +55,19 @@ class HandlerTest extends TestCase
     /**
      * @dataProvider provideHandleBadInputData
      */
-    public function testHandleErrorSend($inputJson, $errors)
+    public function testHandleErrorSend($inputJson, array $errors)
     {
-        $this->readerFactory->method('createRequestReader')
+        $request = $this->createMock(Request::class);
+        $this->requestFactory->method('createRequest')
             ->with($inputJson)
-            ->willReturn($this->reader);
-
-        $this->reader->method('hasErrors')
-            ->willReturn(false);
+            ->willReturn($request);
 
         $this->sender->method('sendEmail')
-            ->with($this->emailRequest)
-            ->willReturn($this->response);
-
-        $this->response->method('hasErrors')
-            ->willReturn(true);
-        $this->response->method('getErrors')
+            ->with($request)
             ->willReturn($errors);
 
         $jsonResponse = new stdClass();
-        $this->responseFactory->method('createErrorResponse')
+        $this->responseFactory->method('createProcessErrorResponse')
             ->with($errors)
             ->willReturn($jsonResponse);
 
@@ -99,22 +80,19 @@ class HandlerTest extends TestCase
      */
     public function testHandleSuccessSend($inputJson, $errors)
     {
-        $this->readerFactory->method('createRequestReader')
+        $request = $this->createMock(Request::class);
+        $this->requestFactory->method('createRequest')
             ->with($inputJson)
-            ->willReturn($this->reader);
+            ->willReturn($request);
 
-        $this->reader->method('hasErrors')
-            ->willReturn(false);
-
+        $messageId = \md5(\time());
         $this->sender->method('sendEmail')
-            ->with($this->emailRequest)
-            ->willReturn($this->response);
-
-        $this->response->method('hasErrors')
-            ->willReturn(false);
+            ->with($request)
+            ->willReturn($messageId);
 
         $jsonResponse = new stdClass();
         $this->responseFactory->method('createSuccessResponse')
+            ->with($messageId)
             ->willReturn($jsonResponse);
 
         $outputJson = $this->handler->handle($inputJson);

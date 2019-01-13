@@ -31,4 +31,14 @@ class ResponseFactory implements ResponseFactoryInterface
         $json->errors = (object) $errors;
         return $json;
     }
+
+    public function createInputErrorResponse(array $errors)
+    {
+        return $this->createErrorResponse($errors);
+    }
+
+    public function createProcessErrorResponse(array $errors)
+    {
+        return $this->createErrorResponse($errors);
+    }
 }

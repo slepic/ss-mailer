@@ -14,5 +14,11 @@ interface ResponseFactoryInterface
      * @param string[] $errors
      * @return scalar|array|stdClass|JsonSerializable
      */
-    public function createErrorResponse(array $errors);
+    public function createInputErrorResponse(array $errors);
+
+    /**
+     * @param string[] $errors
+     * @return scalar|array|stdClass|JsonSerializable
+     */
+    public function createProcessErrorResponse(array $errors);
 }
