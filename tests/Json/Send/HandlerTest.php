@@ -17,7 +17,7 @@ class HandlerTest extends TestCase
         $this->requestFactory = $this->createMock(RequestFactory::class);
         $this->sender = $this->createMock(Sender::class);
         $this->responseFactory = $this->createMock(ResponseFactory::class);
-        $this->handler = new Handler($this->requestFactory, $this->responseFactory, $this->sender);
+        $this->handler = new Handler($this->sender, $this->requestFactory, $this->responseFactory);
     }
 
     public function provideHandleBadInputData(): array

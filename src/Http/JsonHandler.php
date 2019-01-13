@@ -9,7 +9,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use SsMailer\Json\HandlerInterface as JsonDelegateHandler;
 use SsMailer\Json\CoderInterface as JsonCoder;
-use SsMailer\Json\Coder as DefaultCoder;
+use SsMailer\Json\NativeCoder as DefaultJsonCoder;
 use Zend\Diactoros\ResponseFactory as DefaultResponseFactory;
 use Zend\Diactoros\StreamFactory as DefaultStreamFactory;
 
@@ -28,7 +28,7 @@ class JsonHandler implements Handler
     ) {
         $this->handler = $handler;
         $this->responseFactory = $responseFactory ?: new DefaultResponseFactory();
-        $this->streamFactory = $streamFactory ?: DefaultStreamFactory();
+        $this->streamFactory = $streamFactory ?: new DefaultStreamFactory();
         $this->json = $coder ?: new DefaultJsonCoder();
     }
 

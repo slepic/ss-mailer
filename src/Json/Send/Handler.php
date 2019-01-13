@@ -3,6 +3,8 @@
 namespace SsMailer\Json\Send;
 
 use SsMailer\Json\HandlerInterface;
+use SsMailer\Json\Send\RequestFactory as DefaultRequestFactory;
+use SsMailer\Json\Send\ResponseFactory as DefaultResponseFactory;
 use SsMailer\Json\Send\RequestFactoryInterface as RequestFactory;
 use SsMailer\Json\Send\ResponseFactoryInterface as ResponseFactory;
 use SsMailer\Model\Send\SenderInterface as Sender;
@@ -15,13 +17,13 @@ class Handler implements HandlerInterface
     private $sender;
 
     public function __construct(
-        RequestFactory $requestFactory,
-        ResponseFactory $responseFactory,
-        Sender $sender
+        Sender $sender,
+        RequestFactory $requestFactory = null,
+        ResponseFactory $responseFactory = null
     ) {
-        $this->requestFactory = $requestFactory;
-        $this->responseFactory = $responseFactory;
         $this->sender = $sender;
+        $this->requestFactory = $requestFactory ?: new DefaultRequestFactory();
+        $this->responseFactory = $responseFactory ?: new DefaultResponseFactory();
     }
 
     public function handle($json)
