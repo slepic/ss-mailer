@@ -24,9 +24,10 @@ class RequestFactory implements RequestFactoryInterface
 
         $errors = [];
         $builder = $this->builderFactory->createRequestBuilder();
+        $emailBuilder = $builder->getEmailBuilder();
         if (isset($json->from)) {
             if (is_string($json->from)) {
-                $builder->getEmailBuilder()->setFrom($json->from);
+                $emailBuilder->setFrom($json->from);
             } else {
                 $errors['from'] = 'Field "from" must be a string.';
             }
@@ -34,9 +35,9 @@ class RequestFactory implements RequestFactoryInterface
         if (isset($json->to)) {
             if (is_string($json->to)) {
                 $to = explode(',', $json->to);
-                $builder->setTo($to);
+                $emailBuilder->setTo($to);
             } elseif (is_array($json->to)) {
-                $builder->setTo($json->to);
+                $emailBuilder->setTo($json->to);
             } else {
                 $errors['to'] = 'Field "to" must be a string or array of string.';
             }
@@ -44,9 +45,9 @@ class RequestFactory implements RequestFactoryInterface
         if (isset($json->cc)) {
             if (is_string($json->cc)) {
                 $cc = explode(',', $json->cc);
-                $builder->setCc($cc);
+                $emailBuilder->setCc($cc);
             } elseif (is_array($json->cc)) {
-                $builder->setCc($json->cc);
+                $emailBuilder->setCc($json->cc);
             } else {
                 $errors['cc'] = 'Field "cc" must be a string or array of string.';
             }
@@ -54,30 +55,30 @@ class RequestFactory implements RequestFactoryInterface
         if (isset($json->bcc)) {
             if (is_string($json->bcc)) {
                 $bcc = explode(',', $json->bcc);
-                $builder->setBcc($bcc);
+                $emailBuilder->setBcc($bcc);
             } elseif (is_array($json->bcc)) {
-                $builder->setBcc($json->bcc);
+                $emailBuilder->setBcc($json->bcc);
             } else {
                 $errors['bcc'] = 'Field "bcc" must be a string or array of string.';
             }
         }
         if (isset($json->subject)) {
             if (is_string($json->subject)) {
-                $builder->setSubject($json->subject);
+                $emailBuilder->setSubject($json->subject);
             } else {
                 $errors['subject'] = 'Field "subject" must be a string.';
             }
         }
         if (isset($json->body)) {
             if (is_string($json->body)) {
-                $builder->setBody($json->body);
+                $emailBuilder->setBody($json->body);
             } else {
                 $errors['body'] = 'Field "body" must be a string.';
             }
         }
         if (isset($json->isHtml)) {
             if (is_bool($json->isHtml)) {
-                $builder->setIsHtml($json->isHtml);
+                $emailBuilder->setIsHtml($json->isHtml);
             } else {
                 $errors['isHtml'] = 'Field "isHtml" must be boolean.';
             }

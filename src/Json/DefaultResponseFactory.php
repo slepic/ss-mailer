@@ -2,6 +2,8 @@
 
 namespace SsMailer\Json;
 
+use stdClass;
+
 class DefaultResponseFactory implements ResponseFactoryInterface
 {
     public function createSuccessResponse()
@@ -16,6 +18,6 @@ class DefaultResponseFactory implements ResponseFactoryInterface
         $response = new stdClass();
         $response->status = false;
         $response->errors = (object) $errors;
-        return $this->response;
+        return $response;
     }
 }

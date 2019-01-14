@@ -6,6 +6,7 @@ use SsMailer\Json\HandlerInterface;
 use SsMailer\Json\ResponseFactoryInteface;
 use SsMailer\Json\DefaultResponseFactory;
 use SsMailer\Model\Cancel\CancelableRepositoryInterface;
+use stdClass;
 
 class Handler implements HandlerInterface
 {
@@ -29,9 +30,9 @@ class Handler implements HandlerInterface
         if (!is_string($json->id) || $json->id === '') {
             return $this->responseFactory->createErrorResponse(['id' => 'Id must be non-empty string.']);
         }
-        $request = $this->repository->findById($requestId);
+        $request = $this->repository->findById($json->id);
         if ($request === null) {
-            return $this->createErrorResponse(['id' => 'Request not found.']);
+            return $this->responseFactory->createErrorResponse(['id' => 'Request not found.']);
         }
         if ($request->canCancel()) {
             $request->cancel();

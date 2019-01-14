@@ -9,25 +9,25 @@ namespace SsMailer\Model\Cancel;
  * It will throw an exception if the id contains letter 't'.
  * Otherwise it behaves as it he request is successfully canceled.
  */
-class FakeCancelableRepository implements CancelableRepository
+class FakeCancelableRepository implements CancelableRepositoryInterface
 {
-    public function findById(string $requestId): CancelableInterface
+    public function findById(string $requestId): ?CancelableInterface
     {
-        if (strpos('e', $requestId) !== false) {
+        if (strpos($requestId, 'e') !== false) {
             return null;
         }
-        if (strpos('c', $requestId) !== false) {
+        if (strpos($requestId, 'c') !== false) {
             return new class implements CancelableInterface {
                 public function canCancel(): bool
                 {
                     return false;
                 }
-                public function cance(): void
+                public function cancel(): void
                 {
                 }
             };
         }
-        if (strpos('t', $requestId) !== false) {
+        if (strpos($requestId, 't') !== false) {
             throw new Exception('This is a test what happens if repository throws.');
         }
         return new class implements CancelableInterface {
@@ -35,7 +35,7 @@ class FakeCancelableRepository implements CancelableRepository
             {
                 return true;
             }
-            public function cance(): void
+            public function cancel(): void
             {
             }
         };
