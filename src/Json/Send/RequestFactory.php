@@ -6,6 +6,7 @@ use SsMailer\Model\Send\RequestInterface;
 use SsMailer\Model\Send\RequestBuilderFactoryInterface as BuilderFactory;
 use SsMailer\Model\Send\Request as DefaultBuilderFactory;
 use stdClass;
+use DateTime;
 
 class RequestFactory implements RequestFactoryInterface
 {
@@ -81,6 +82,32 @@ class RequestFactory implements RequestFactoryInterface
                 $emailBuilder->setIsHtml($json->isHtml);
             } else {
                 $errors['isHtml'] = 'Field "isHtml" must be boolean.';
+            }
+        }
+        if (isset($json->delay)) {
+            if (is_string($json->delay)) {
+                try {
+                    $dateTime = new DateTime($json->delay);
+                    $builder->setSendDateTime($dateTime);
+                } catch (\Exception $e) {
+                    $errors['delay'] = 'Field "delay" contains invalid value.';
+                }
+            } else {
+                $errors['delay'] = 'Field "delay" must be a string.';
+            }
+        }
+        if (isset($json->successUrl)) {
+            if (is_string($json->successUrl)) {
+                $builder->setSuccessUrl($json->successUrl);
+            } else {
+                $errors['successUrl'] = 'Field "successUrl" must be a string.';
+            }
+        }
+        if (isset($json->errorUrl)) {
+            if (is_string($json->errorUrl)) {
+                $builder->setErrorUrl($json->errorUrl);
+            } else {
+                $errors['errorUrl'] = 'Field "errorUrl" must be a string.';
             }
         }
         if (empty($errors)) {

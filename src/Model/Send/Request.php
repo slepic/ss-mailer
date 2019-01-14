@@ -7,7 +7,12 @@ use SsMailer\Model\EmailBuilderInterface;
 use SsMailer\Model\Email as DefaultEmailBuilder;
 use DateTimeInterface;
 
-class Request implements RequestInterface, RequestBuilderInterface, RequestBuilderFactoryInterface
+class Request implements
+    RequestInterface,
+    DelayableRequestInterface,
+    HookableRequestInterface,
+    RequestBuilderInterface,
+    RequestBuilderFactoryInterface
 {
     private $emailBuilder;
     private $email;
@@ -64,6 +69,26 @@ class Request implements RequestInterface, RequestBuilderInterface, RequestBuild
     public function setEmail(EmailInterface $email): void
     {
         $this->email = $email;
+    }
+
+    public function getSuccessUrl(): ?string
+    {
+        return $this->successUrl;
+    }
+
+    public function setSuccessUrl(string $url): void
+    {
+        $this->successUrl = $successUrl;
+    }
+
+    public function getErrorUrl(): ?string
+    {
+        return $this->errorUrl;
+    }
+
+    public function setErrorUrl(string $url): void
+    {
+        $this->errorUrl = $errorUrl;
     }
 
     public function buildRequest(): RequestInterface

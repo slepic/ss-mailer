@@ -32,6 +32,10 @@ class RequestFactoryTest extends TestCase
         $data[] = [(object) ['subject' => []], ['subject']];
         $data[] = [(object) ['body' => []], ['body']];
         $data[] = [(object) ['isHtml' => []], ['isHtml']];
+        $data[] = [(object) ['delay' => []], ['delay']];
+        $data[] = [(object) ['delay' => 'dadsadx'], ['delay']];
+        $data[] = [(object) ['successUrl' => []], ['successUrl']];
+        $data[] = [(object) ['errorUrl' => []], ['errorUrl']];
         return $data;
     }
 

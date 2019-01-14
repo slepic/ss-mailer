@@ -12,6 +12,8 @@ interface RequestBuilderInterface
     public function setSendDateTime(DateTimeInterface $dateTime): void;
     public function getEmailBuilder(): EmailBuilderInterface;
     public function setEmail(EmailInterface $email): void;
+    public function setSuccessUrl(string $url): void;
+    public function setErrorUrl(string $url): void;
 
     public function buildRequest(): RequestInterface;
 }

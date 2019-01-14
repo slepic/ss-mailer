@@ -14,8 +14,14 @@ class Send extends \SsMailer\Http\Application
         //performs send of immediate emails
         $mailer = new \SsMailer\Model\FakeMailer();
 
-        //checkes whether mail is to be delivered immediately or with delay and acts accordingly
-        $sender = new \SsMailer\Model\Send\Sender($mailer, $persister);
+        //sends emails immediately
+        $immediateSender = new \SsMailer\Model\Send\ImmediateSender($mailer);
+
+        //sends notifications to webhooks
+        $hookedSender = new \SsMailer\Model\Send\HookedSender($immediateSender);
+
+        //pushes delayd emails to a queue
+        $sender = new \SsMailer\Model\Send\DelayedSender($hookedSender, $persister);
 
         //maps input and output of the process to json representations
         $jsonHandler = new \SsMailer\Json\Send\Handler($sender);
