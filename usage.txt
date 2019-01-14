@@ -1,7 +1,7 @@
 SEND EMAIL:
 
 Request:
-POST /email/send
+POST /send.php
 {
     to: "target@example.com", //string => comma separated list of valid email addresses; array => array of valid email addresses.
     cc: "copy@example.com", //----//----
@@ -9,26 +9,24 @@ POST /email/send
     from: "sender@example.com",
     subject: "email subject",
     body: "<div>Hello world.</div>",
-    html: true,
+    isHtml: true,
     delay: "30 minutes",
-    webhooks: { 
-        success: "https://example.com/success",
-        failure: "https://example.com/failure",
-    }
+    successUrl: "https://example.com/success",
+    errirUrl: "https://example.com/failure"
 }
 
 Success Response:
 HTTP 200 OK
 {
-    success: true,
-    messageId: 123 //only delayed emails
+    status: true,
+    id: 123 //only delayed emails
 }
 
 Error Response:
 HTTP 200 OK
 {
     //Indicates error response
-    success: false,
+    status: false,
 
     //Object containing error messages with properties corresponding to request keys in which the error occured.
     //One exception is property "delivery" which is present when validations are ok but delivery of an immediate email fails.
@@ -46,18 +44,21 @@ HTTP 200 OK
 CANCEL DELAYED EMAIL
 
 Request:
-GET /email/cancel/<messageId>
+POST /cancel.php
+{
+    id: requestId
+}
 
 Success Response:
 HTTP 200 OK
 {
-    success: true
+    status: true
 }
 
 Error Response:
 HTTP 200 OK
 {
-    success: false,
+    status: false,
     errors: {
        id: "Message id not found.",
        expired: "Message has already been sent."
